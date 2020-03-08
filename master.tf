@@ -39,15 +39,16 @@ resource "google_compute_instance" "kube-master" {
     echo "INSTALLS KUBERNETES"
     apt-get update -y && apt-get install -y kubelet kubeadm kubectl
     echo "DOCKER CGROUP DRIVER"
-    echo -e "{\n "exec-opts": ["native.cgroupdriver=systemd"],\n "log-driver": "json-file",\n "log-opts": {\n   "max-size": "100m"\n },\n "storage-driver": "overlay2",\n "storage-opts": [\n   "overlay2.override_kernel_check=true"\n ]\n}" > /etc/docker/daemon.json
+    echo -e "{\n \"exec-opts\": [\"native.cgroupdriver=systemd\"],\n \"log-driver\": \"json-file\",\n \"log-opts\": {\n   \"max-size\": \"100m\"\n },\n \"storage-driver\": \"overlay2\",\n \"storage-opts\": [\n   \"overlay2.override_kernel_check=true\"\n ]\n}" > /etc/docker/daemon.json
     mkdir -p /etc/systemd/system/docker.service.d && systemctl daemon-reload && systemctl restart docker
     echo "DOWNLOAD KUBERNETES IMAGES"
     kubeadm config images pull
     echo "KUBERNETES INIT"
-    kubeadm init > /home/ubuntu/kube-init.log
+    kubeadm init >/home/ubuntu/kube-init.log 2>&1
     echo "KUBERNETES CONFIG"
     sudo --user=ubuntu mkdir -p /home/ubuntu/.kube
-    sudo --user=ubuntu cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
+    cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
+    chown ubuntu: /home/ubuntu/.kube/config
     echo "INSTALLS WEAVE NET"
     kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 SCRIPT
