@@ -26,17 +26,17 @@ resource "google_compute_instance" "kube-worker" {
  }
 
  metadata_startup_script = <<SCRIPT
-    echo "UPGRADE S.O."
+    echo "***** UPGRADE S.O. *****"
     apt-get update -y && apt-get upgrade -y
-    echo "INSTALLS DOCKER"
+    echo "***** INSTALLS DOCKER *****"
     curl -fsSL https://get.docker.com/ | bash
     usermod -aG docker ubuntu
-    echo "INSTALLS DEPENDENCIES"
+    echo "***** INSTALLS DEPENDENCIES *****"
     apt-get update && apt-get install -y apt-transport-https
-    echo "KUBERNETES REPO AND KEY"
+    echo "***** KUBERNETES REPO AND KEY *****"
     curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
     echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
-    echo "INSTALLS KUBERNETES"
+    echo "***** INSTALLS KUBERNETES *****"
     apt-get update -y && apt-get install -y kubelet kubeadm kubectl
 SCRIPT
 
