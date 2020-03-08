@@ -50,7 +50,7 @@ resource "google_compute_instance" "kube-master" {
     cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
     chown ubuntu: /home/ubuntu/.kube/config
     echo "***** INSTALLS WEAVE NET *****"
-    kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+    sudo --user=ubuntu kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 SCRIPT
 
 }
