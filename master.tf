@@ -2,7 +2,8 @@
 resource "google_compute_instance" "kube-master" {
  count = 1
  name         = "kube-master-${count.index + 1}"
- machine_type = "n1-standard-1"  # 3.75 GB RAM
+ machine_type = "n1-standard-2"  # 7.5 GB RAM
+ # machine_type = "n1-standard-1"  # 3.75 GB RAM
  # machine_type = "g1-small"  # 1.7 GB RAM
  zone         = "${var.region}-b"
 
@@ -37,6 +38,9 @@ resource "google_compute_instance" "kube-master" {
     echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
     echo "INSTALLS KUBERNETES"
     apt-get update -y && apt-get install -y kubelet kubeadm kubectl
+    echo "DOCKER CGROUP DRIVER"
+    echo -e "{\n "exec-opts": ["native.cgroupdriver=systemd"],\n "log-driver": "json-file",\n "log-opts": {\n   "max-size": "100m"\n },\n "storage-driver": "overlay2",\n "storage-opts": [\n   "overlay2.override_kernel_check=true"\n ]\n}" > /etc/docker/daemon.json
+    mkdir -p /etc/systemd/system/docker.service.d && systemctl daemon-reload && systemctl restart docker
     echo "DOWNLOAD KUBERNETES IMAGES"
     kubeadm config images pull
     echo "KUBERNETES INIT"
