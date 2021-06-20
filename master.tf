@@ -30,7 +30,7 @@ resource "google_compute_instance" "kube-master" {
  metadata_startup_script = <<SCRIPT
     rm -f /etc/localtime && sudo ln -s /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 		echo "***** SSH KEY *****"
-		echo "${file(var.ssh_priv_key)}" >/home/ubuntu/.ssh/key
+		echo "${file(var.priv_key)}" >/home/ubuntu/.ssh/key
 		chown ubuntu: /home/ubuntu/.ssh/key && chmod 600 /home/ubuntu/.ssh/key
 		echo "***** UPGRADE S.O. *****"
     apt-get update -y && apt-get upgrade -y
