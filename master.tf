@@ -21,12 +21,18 @@ resource "google_compute_instance" "kube-master" {
    access_config { }
  }
 
- metadata {
-   ssh-keys = "${var.user}:${file("${var.pub_key}")}"
+ metadata = {
+   ssh-keys = "${var.user}:${file(var.pub_key)}"
  }
 
+# sudo apt-add-repository “deb http://apt.kubernetes.io/ kubernetes-focal main”
+
  metadata_startup_script = <<SCRIPT
-    echo "***** UPGRADE S.O. *****"
+    rm -f /etc/localtime && sudo ln -s /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
+		echo "***** SSH KEY *****"
+		echo "${file(var.ssh_priv_key)}" >/home/ubuntu/.ssh/key
+		chown ubuntu: /home/ubuntu/.ssh/key && chmod 600 /home/ubuntu/.ssh/key
+		echo "***** UPGRADE S.O. *****"
     apt-get update -y && apt-get upgrade -y
     echo "***** INSTALLS DOCKER *****"
     curl -fsSL https://get.docker.com/ | bash
