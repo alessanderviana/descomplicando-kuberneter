@@ -5,7 +5,7 @@ variable "gcp_project" {
   default = "infra-como-codigo-e-automacao"
 }
 variable "credentials" {
-  default = "~/repositorios/terraform/gcloud/credentials.json"
+  default = "~/.ssh/infra-como-codigo-e-automacao-22c2e61859a3.json"
 }
 variable "vpc_name" {
   default = "default"
